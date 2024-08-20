@@ -3,8 +3,8 @@ const mysql = require('mysql2')
 const app = express()
 const port = 3000
 
-const { GoogleGenerativeAI } = require("@google/generative-ai");    
-const genAI = new GoogleGenerativeAI('AIzaSyCU_5u708H0dfarFZW_2ksANJxw86qyTu8');
+const OpenAI = require('openai')
+const openai = new OpenAI({'apiKey': 'YOUR_API_KEY'});
 
 //Database(MySql) configulation
 const db = mysql.createConnection(
@@ -49,13 +49,17 @@ app.post('/chat/post',  async function(req, res) {
     let sql = 'INSERT INTO chat (custID, empID, message, sender) VALUES (?, ?, ?, ?)';
     await query(sql, [custID, empID, message, sender]);
 
-    // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
-
-    const result = await model.generateContent(message);
-    const response = result.response;
-    const text = response.text();
-    console.log(text);
+    // The GPT models
+    const response = await openai.chat.completions.create({
+      messages: [
+          { role: "system", content: "คุณเป็นผู้เชี่ยวชาญด้านฟุตบอล" },        
+          { role: "user", content: message },
+      ],
+      model: "gpt-4o-mini",  
+      max_tokens: 256  
+    });    
+    
+    const text = response.choices[0].message.content;    
         
     sql = 'INSERT INTO chat (custID, empID, message, sender) VALUES (?, ?, ?,"e")';
     await query(sql, [custID, empID, text]);

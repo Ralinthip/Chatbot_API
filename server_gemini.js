@@ -4,7 +4,7 @@ const app = express()
 const port = 3000
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");    
-const genAI = new GoogleGenerativeAI('AIzaSyCU_5u708H0dfarFZW_2ksANJxw86qyTu8');
+const genAI = new GoogleGenerativeAI('YOUR_API_KEY');
 
 //Database(MySql) configulation
 const db = mysql.createConnection(
@@ -49,13 +49,12 @@ app.post('/chat/post',  async function(req, res) {
     let sql = 'INSERT INTO chat (custID, empID, message, sender) VALUES (?, ?, ?, ?)';
     await query(sql, [custID, empID, message, sender]);
 
-    // The Gemini 1.5 models are versatile and work with both text-only and multimodal prompts
+    // The Gemini models
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash"});
 
     const result = await model.generateContent(message);
     const response = result.response;
-    const text = response.text();
-    console.log(text);
+    const text = response.text();    
         
     sql = 'INSERT INTO chat (custID, empID, message, sender) VALUES (?, ?, ?,"e")';
     await query(sql, [custID, empID, text]);
