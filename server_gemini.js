@@ -4,14 +4,14 @@ const app = express()
 const port = 3000
 
 const { GoogleGenerativeAI } = require("@google/generative-ai");    
-const genAI = new GoogleGenerativeAI('YOUR_API_KEY');
+const genAI = new GoogleGenerativeAI('AIzaSyCk088UIykYC-OFQGaNo7guKMe8bDL4GWQ');
 
 //Database(MySql) configulation
 const db = mysql.createConnection(
     {
         host: "localhost",
         user: "root",
-        password: "1234",
+        password: "Cs12345678",
         database: "shopdee"
     }
 )
